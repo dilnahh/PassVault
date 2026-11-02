@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Account - SHA-256 Password Vault</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">🛡️</div>
+        <div class="brand-text">
+          <h1>AuthLab <span class="brand-badge">SHA-256</span></h1>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Sign In</a>
+        <a href="#howItWorks" class="nav-link">How It Works</a>
+        <a href="#storedHashes" class="nav-link">Inspect Storage</a>
+        <a href="register.html" class="nav-btn">Create Account</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-layout">
+    
+    <!-- Hero / Header -->
+    <header class="page-header">
+      <div class="tagline-badge">
+        <span>📝 New User Registration</span>
+      </div>
+      <h2>SECURE ACCOUNT CREATION</h2>
+      <p>Watch your password transform into an irreversible 256-bit SHA-256 digest before it is saved into storage.</p>
+    </header>
+
+    <!-- Two-column Grid: Registration Form & Process Explanation -->
+    <div class="two-column-grid">
+      
+      <!-- Column 1: Registration Card -->
+      <section class="card" aria-labelledby="registerTitle">
+        <h3 id="registerTitle" class="card-title">Create Account</h3>
+        <p class="card-subtitle">Fill in your desired username and password below.</p>
+
+        <!-- In-page alert notification container -->
+        <div id="registerMessage" class="alert-box" role="alert"></div>
+
+        <form id="registerForm" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="regUsername" class="form-label">Username</label>
+            <input 
+              type="text" 
+              id="regUsername" 
+              class="form-input" 
+              placeholder="e.g. student_alex" 
+              autocomplete="username" 
+              required
+            >
+            <span class="form-hint">At least 3 characters. Usernames must be unique.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="regPassword" class="form-label">Password</label>
+            <input 
+              type="password" 
+              id="regPassword" 
+              class="form-input" 
+              placeholder="Enter your password" 
+              autocomplete="new-password" 
+              required
+            >
+            
+            <!-- Real-time SHA-256 Hash Preview as you type -->
+            <div class="live-hash-card">
+              <div class="live-hash-title">Real-Time SHA-256 Digest Preview:</div>
+              <div id="liveHashPreview" class="live-hash-value">Hash will appear here as you type...</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="regConfirmPassword" class="form-label">Confirm Password</label>
+            <input 
+              type="password" 
+              id="regConfirmPassword" 
+              class="form-input" 
+              placeholder="Re-enter your password" 
+              autocomplete="new-password" 
+              required
+            >
+            <span class="form-hint">Must match the password entered above.</span>
+          </div>
+
+          <button type="submit" id="btnRegister" class="btn-primary">
+            Register with SHA-256 Hash
+          </button>
+
+          <div class="form-footer">
+            Already have an account? 
+            <a href="index.html" class="form-link">Sign In here</a>
+          </div>
+        </form>
+      </section>
+
+      <!-- Column 2: Educational Explanation Card -->
+      <section id="howItWorks" class="edu-card" aria-labelledby="eduRegisterTitle">
+        <span class="edu-badge">Storage Security</span>
+        <div>
+          <h3 id="eduRegisterTitle" class="card-title">How Registration Works</h3>
+          <p class="card-subtitle">Protecting credentials from the moment of account creation.</p>
+        </div>
+
+        <!-- Pipeline Diagram -->
+        <div class="pipeline-diagram">
+          <div class="pipeline-step">
+            <div class="step-number">1</div>
+            <div class="step-details">
+              <strong>Form Input Validation</strong>
+              <span>Ensures fields are complete and passwords match</span>
+            </div>
+          </div>
+
+          <div class="pipeline-arrow">↓</div>
+
+          <div class="pipeline-step">
+            <div class="step-number">2</div>
+            <div class="step-details">
+              <strong>Check Duplicate Username</strong>
+              <span>Verifies username is not already registered</span>
+            </div>
+          </div>
+
+          <div class="pipeline-arrow">↓</div>
+
+          <div class="pipeline-step">
+            <div class="step-number">3</div>
+            <div class="step-details">
+              <strong>Compute SHA-256 Hash</strong>
+              <span><code>crypto.subtle.digest()</code> produces a 64-char hex string</span>
+            </div>
+          </div>
+
+          <div class="pipeline-arrow">↓</div>
+
+          <div class="pipeline-step">
+            <div class="step-number">4</div>
+            <div class="step-details">
+              <strong>Commit to <code>localStorage</code></strong>
+              <span>Saves only <code>username</code> &amp; <code>passwordHash</code></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="security-callout">
+          <strong>🔒 Zero Plaintext Storage Guarantee</strong>
+          The original password variable is strictly discarded after the cryptographic hash is computed. The database / localStorage never knows the plaintext password.
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Demonstration Section: Inspect Stored Hashes in LocalStorage -->
+    <section id="storedHashes" class="stored-hash-section" aria-labelledby="storageRegTitle">
+      <div class="section-top">
+        <div>
+          <h3 id="storageRegTitle">
+            <span>Browser <code>localStorage</code> Inspector</span>
+            <span id="storedUsersCount" class="count-pill">0 users</span>
+          </h3>
+          <p class="card-subtitle" style="margin-bottom: 0;">Notice that only the username and the cryptographic SHA-256 hash are committed to storage.</p>
+        </div>
+
+        <div class="demo-controls">
+          <button type="button" id="seedDemoBtn" class="btn-secondary" title="Load sample test users">
+            + Load Demo Accounts
+          </button>
+          <button type="button" id="clearDemoBtn" class="btn-secondary danger" title="Clear localStorage users">
+            Clear Storage
+          </button>
+        </div>
+      </div>
+
+      <!-- Container dynamically populated by script.js -->
+      <div id="storedUsersList"></div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p><strong>PASSWORD STORAGE &amp; VERIFICATION USING SHA-256</strong> &bull; College Cybersecurity Demonstration</p>
+      <p class="footer-note">Built with pure HTML5, CSS3, Vanilla JavaScript, and native Web Crypto API. No external libraries or servers required.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

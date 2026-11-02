@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHA-256 Password Storage & Verification</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-icon">🛡️</div>
+        <div class="brand-text">
+          <h1>AuthLab <span class="brand-badge">SHA-256</span></h1>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Sign In</a>
+        <a href="#howItWorks" class="nav-link">How It Works</a>
+        <a href="#storedHashes" class="nav-link">Inspect Storage</a>
+        <a href="register.html" class="nav-btn">Create Account</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-layout">
+    
+    <!-- Hero / Intro Header -->
+    <header class="page-header">
+      <div class="tagline-badge">
+        <span>🔐 College Cybersecurity Lab</span>
+      </div>
+      <h2>PASSWORD STORAGE &amp; VERIFICATION</h2>
+      <p>Demonstrating how one-way cryptographic hashing protects credentials during user authentication without storing plaintext passwords.</p>
+    </header>
+
+    <!-- Two-column Grid: Login Form & Educational Flowchart -->
+    <div class="two-column-grid">
+      
+      <!-- Column 1: Login Card -->
+      <section class="card" aria-labelledby="loginTitle">
+        <h3 id="loginTitle" class="card-title">Sign In</h3>
+        <p class="card-subtitle">Enter your credentials to test real-time SHA-256 hash verification.</p>
+
+        <!-- In-page alert notification container -->
+        <div id="loginMessage" class="alert-box" role="alert"></div>
+
+        <form id="loginForm" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="loginUsername" class="form-label">Username</label>
+            <input 
+              type="text" 
+              id="loginUsername" 
+              class="form-input" 
+              placeholder="e.g. student_alex" 
+              autocomplete="username" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword" class="form-label">Password</label>
+            <input 
+              type="password" 
+              id="loginPassword" 
+              class="form-input" 
+              placeholder="Enter your password" 
+              autocomplete="current-password" 
+              required
+            >
+            <span class="form-hint">Your password will be converted to a 64-char SHA-256 hash before verification.</span>
+          </div>
+
+          <button type="submit" id="btnLogin" class="btn-primary">
+            Sign In with SHA-256
+          </button>
+
+          <div class="form-footer">
+            Don't have an account yet? 
+            <a href="register.html" class="form-link">Register here</a>
+          </div>
+        </form>
+      </section>
+
+      <!-- Column 2: Educational Explanation Card -->
+      <section id="howItWorks" class="edu-card" aria-labelledby="eduTitle">
+        <span class="edu-badge">Core Concept</span>
+        <div>
+          <h3 id="eduTitle" class="card-title">How Login Verification Works</h3>
+          <p class="card-subtitle">Plaintext passwords are never compared or stored.</p>
+        </div>
+
+        <!-- Pipeline Diagram -->
+        <div class="pipeline-diagram">
+          <div class="pipeline-step">
+            <div class="step-number">1</div>
+            <div class="step-details">
+              <strong>User Inputs Password</strong>
+              <span>Plaintext string entered into the login field</span>
+            </div>
+          </div>
+
+          <div class="pipeline-arrow">↓</div>
+
+          <div class="pipeline-step">
+            <div class="step-number">2</div>
+            <div class="step-details">
+              <strong>SHA-256 Hashing</strong>
+              <span>Web Crypto API generates a 256-bit (64 hex char) digest</span>
+            </div>
+          </div>
+
+          <div class="pipeline-arrow">↓</div>
+
+          <div class="pipeline-step">
+            <div class="step-number">3</div>
+            <div class="step-details">
+              <strong>Compare Hashes</strong>
+              <span>Candidate hash is compared to stored hash in localStorage</span>
+            </div>
+          </div>
+
+          <div class="pipeline-arrow">↓</div>
+
+          <div class="pipeline-step">
+            <div class="step-number">4</div>
+            <div class="step-details">
+              <strong>Match = Authenticated</strong>
+              <span>If hashes match exactly, access is granted!</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="security-callout">
+          <strong>💡 Irreversible One-Way Function</strong>
+          Hashing is a strictly one-way process. Even if an attacker inspects localStorage, they only obtain the hash. The original password cannot be mathematically reversed.
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Demonstration Section: Inspect Stored Hashes in LocalStorage -->
+    <section id="storedHashes" class="stored-hash-section" aria-labelledby="storageTitle">
+      <div class="section-top">
+        <div>
+          <h3 id="storageTitle">
+            <span>Browser <code>localStorage</code> Inspector</span>
+            <span id="storedUsersCount" class="count-pill">0 users</span>
+          </h3>
+          <p class="card-subtitle" style="margin-bottom: 0;">Live inspection of stored user records. Notice how original passwords are NEVER present.</p>
+        </div>
+
+        <div class="demo-controls">
+          <button type="button" id="seedDemoBtn" class="btn-secondary" title="Load sample test users">
+            + Load Demo Accounts
+          </button>
+          <button type="button" id="clearDemoBtn" class="btn-secondary danger" title="Clear localStorage users">
+            Clear Storage
+          </button>
+        </div>
+      </div>
+
+      <!-- Container dynamically populated by script.js -->
+      <div id="storedUsersList"></div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p><strong>PASSWORD STORAGE &amp; VERIFICATION USING SHA-256</strong> &bull; College Cybersecurity Demonstration</p>
+      <p class="footer-note">Built with pure HTML5, CSS3, Vanilla JavaScript, and native Web Crypto API. No external libraries or servers required.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
